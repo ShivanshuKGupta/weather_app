@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"apk"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"label": "flutter: flutter build apk",
+			"detail": ""
+		},
+		{
+			"type": "shell",
+			"command": "./update.bat",
+			"args": [],
+			"group": "build",
+			"problemMatcher": [],
+			"label": "git: Update Remote Repository",
+			"detail": "Merges testbranch with master and then pulls remote repo and merges it with local repo and then finally pushes it back onto the remote repo."
+		}
+	]
+}
