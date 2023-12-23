@@ -81,13 +81,14 @@ Widget linkText(
     url = "tel:+91$phone";
   }
   if (whatsapp) {
-    url = "wa.me/91$phone";
+    url = "https://wa.me/91$phone";
   }
   return GestureDetector(
     child: ShaderMask(
       blendMode: BlendMode.srcATop,
       shaderCallback: (rect) {
-        return const LinearGradient(colors: [Colors.blue, Colors.deepPurple])
+        return const LinearGradient(
+                colors: [Colors.blueAccent, Colors.deepPurpleAccent])
             .createShader(rect);
       },
       child: icon != null
@@ -131,11 +132,14 @@ class ShaderWidget extends StatelessWidget {
   final Widget child;
   final List<Color> colors;
   final Widget? onTop;
+  final AlignmentGeometry begin, end;
   const ShaderWidget({
     super.key,
     required this.child,
     this.colors = const [Colors.deepPurpleAccent, Colors.blue],
     this.onTop,
+    this.begin = Alignment.centerLeft,
+    this.end = Alignment.centerRight,
   });
 
   @override
@@ -146,7 +150,11 @@ class ShaderWidget extends StatelessWidget {
         ShaderMask(
           blendMode: BlendMode.srcATop,
           shaderCallback: (rect) {
-            return LinearGradient(colors: colors).createShader(rect);
+            return LinearGradient(
+              colors: colors,
+              begin: begin,
+              end: end,
+            ).createShader(rect);
           },
           child: child,
         ),

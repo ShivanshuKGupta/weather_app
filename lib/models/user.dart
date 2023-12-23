@@ -1,4 +1,4 @@
-import 'package:weather_app/models/firestore/firestore_document.dart';
+import 'package:weather_app/models/firestore_document.dart';
 
 class UserData extends FirestoreDocument {
   // The email and firestore id are the same for any user
@@ -12,6 +12,7 @@ class UserData extends FirestoreDocument {
   String? phoneNumber;
   String? address;
   String? imgUrl;
+  String? audioFile;
 
   UserData({
     super.id,
@@ -21,6 +22,7 @@ class UserData extends FirestoreDocument {
     this.phoneNumber,
     this.address,
     this.imgUrl,
+    this.audioFile,
   }) : super(path: "users");
 
   Map<String, dynamic> toJson() {
@@ -28,7 +30,9 @@ class UserData extends FirestoreDocument {
       'name': name,
       'phoneNumber': phoneNumber,
       'address': address,
+      "dob": dob?.millisecondsSinceEpoch,
       'imgUrl': imgUrl,
+      'audioFile': audioFile,
     };
   }
 
@@ -42,6 +46,10 @@ class UserData extends FirestoreDocument {
     phoneNumber = json['phoneNumber'];
     address = json['address'];
     imgUrl = json['imgUrl'];
+    audioFile = json['audioFile'];
+    dob = json['dob'] == null
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(json['dob']);
   }
 
   @override

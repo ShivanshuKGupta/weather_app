@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/auth/screens/login_screen.dart';
 import 'package:weather_app/auth/screens/signup_screen.dart';
-import 'package:weather_app/dashboard/screens/dashboard_screen.dart';
+import 'package:weather_app/dashboard/screens/permission_scren.dart';
 import 'package:weather_app/models/globals.dart';
-import 'package:weather_app/utils/utils.dart';
 
 class LoginDetectScreen extends StatelessWidget {
   final int? screen;
@@ -19,32 +18,7 @@ class LoginDetectScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           currentUser.id = auth.currentUser!.email!;
-          return FutureBuilder(
-            key: const ValueKey('ft'),
-            future: currentUser.fetch(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                auth.signOut();
-                return screen != 1 ? const LoginScreen() : const SignupScreen();
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicatorRainbow(
-                          width: null,
-                          height: null,
-                        ),
-                        Text('Fetching your info...'),
-                      ],
-                    ),
-                  ),
-                );
-              }
-              return const DashboardScreen();
-            },
-          );
+          return const PermissionScreen();
         } else if (snapshot.hasError) {
           return Scaffold(
             body: Center(

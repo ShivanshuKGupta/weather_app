@@ -161,3 +161,99 @@ Future<String?> uploadImage(
   );
   return downloadURL;
 }
+
+Future<String?> uploadFile(
+    context, File? file, String path, String fileName) async {
+  if (file == null) return null;
+  final downloadURL = await Navigator.of(context).push<String?>(
+    DialogRoute(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          final ref = storage.ref().child(path).child(fileName);
+          final uploadTask = ref.putFile(file);
+          return AlertDialog(
+            title: const Text('Uploading...'),
+            actionsAlignment: MainAxisAlignment.center,
+            scrollable: true,
+            actionsPadding: const EdgeInsets.all(10),
+            buttonPadding: const EdgeInsets.all(20),
+            content: Column(
+              children: [
+                Text(fileName),
+                StreamBuilder(
+                  stream: uploadTask.snapshotEvents,
+                  builder: ((context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const LinearProgressIndicator();
+                    }
+                    if (snapshot.data!.state == TaskState.success) {
+                      ref
+                          .getDownloadURL()
+                          .then((value) => Navigator.of(context).pop(value));
+                    }
+                    switch (snapshot.data!.state) {
+                      case TaskState.paused:
+                        return LinearProgressIndicator(
+                          value: snapshot.data!.bytesTransferred /
+                              snapshot.data!.totalBytes,
+                          color: Colors.orange,
+                        );
+                      case TaskState.running:
+                        return LinearProgressIndicator(
+                          value: snapshot.data!.bytesTransferred /
+                              snapshot.data!.totalBytes,
+                        );
+                      case TaskState.success:
+                        return const LinearProgressIndicator();
+                      case TaskState.canceled:
+                      case TaskState.error:
+                        return LinearProgressIndicator(
+                          value: snapshot.data!.bytesTransferred /
+                              snapshot.data!.totalBytes,
+                          color: Colors.red,
+                        );
+                    }
+                  }),
+                ),
+              ],
+            ),
+            actions: [
+              StreamBuilder(
+                stream: uploadTask.snapshotEvents,
+                builder: (ctx, snapshot) {
+                  return TextButton.icon(
+                    label: Text(uploadTask.snapshot.state == TaskState.paused
+                        ? 'Resume'
+                        : 'Pause'),
+                    onPressed: () {
+                      if (uploadTask.snapshot.state == TaskState.paused) {
+                        uploadTask.resume();
+                      } else {
+                        uploadTask.pause();
+                      }
+                    },
+                    icon: Icon(
+                      uploadTask.snapshot.state == TaskState.paused
+                          ? Icons.play_arrow_rounded
+                          : Icons.pause_rounded,
+                    ),
+                  );
+                },
+              ),
+              TextButton.icon(
+                label: const Text('Cancel'),
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                onPressed: () async {
+                  await uploadTask.cancel();
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pop(null);
+                },
+                icon: const Icon(Icons.close_rounded),
+              ),
+            ],
+          );
+        }),
+  );
+  return downloadURL;
+}

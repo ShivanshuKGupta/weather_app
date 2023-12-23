@@ -2,14 +2,14 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:weather_app/auth/screens/login_detect_screen.dart';
 import 'package:weather_app/models/globals.dart';
 import 'package:weather_app/models/image.dart';
-import 'package:weather_app/models/user/user.dart';
+import 'package:weather_app/models/user.dart';
 import 'package:weather_app/utils/utils.dart';
 import 'package:weather_app/utils/widgets/loading_widget.dart';
+import 'package:weather_app/utils/widgets/profile_image.dart';
 
 class BirthdayScreen extends StatefulWidget {
   final String name;
@@ -78,7 +78,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
           while (Navigator.of(context).canPop()) {
             Navigator.of(context).pop();
           }
-          navigatorPush(context, const LoginDetectScreen());
+          navigatorPushReplacement(context, const LoginDetectScreen());
         }
       } catch (e) {
         if (context.mounted) {
@@ -107,55 +107,11 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: height / 10),
-              Container(
-                width: 150,
-                height: 150,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: InkWell(
-                  onTap: () async {
-                    final String? source = await askUser(
-                        context, 'Where to take your photo from?',
-                        custom: {
-                          'gallery': const Icon(Icons.photo_rounded),
-                          'camera': const Icon(Icons.photo_camera_rounded),
-                        });
-                    if (source == null) return;
-                    ImagePicker()
-                        .pickImage(
-                      source: source == 'camera'
-                          ? ImageSource.camera
-                          : ImageSource.gallery,
-                      preferredCameraDevice: CameraDevice.front,
-                    )
-                        .then((value) {
-                      if (value == null) return;
-                      setState(() => img = File(value.path));
-                    });
-                  },
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      Hero(
-                        tag: widget.gender,
-                        child: img != null
-                            ? Image.file(img!, fit: BoxFit.cover)
-                            : Image.asset(
-                                widget.gender == 'Male'
-                                    ? 'assets/images/male.jpg'
-                                    : 'assets/images/female.jpg',
-                                fit: BoxFit.contain,
-                                width: 150,
-                              ),
-                      ),
-                      const CircleAvatar(
-                        child: Icon(Icons.edit_rounded),
-                      )
-                    ],
-                  ),
-                ),
+              ProfileImage(
+                gender: widget.gender == 'Male' ? 0 : 1,
+                onChanged: (img) {
+                  this.img = img;
+                },
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(

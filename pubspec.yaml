@@ -45,6 +45,9 @@ dependencies:
   google_fonts: ^6.1.0
   image_picker: ^1.0.5
   scroll_date_picker: ^3.7.3
+  location: ^5.0.3
+  flutter_sound: ^9.2.13
+  permission_handler: ^11.1.0
 
 dev_dependencies:
   flutter_test:
