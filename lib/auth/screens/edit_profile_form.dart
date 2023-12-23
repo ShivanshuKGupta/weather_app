@@ -89,6 +89,12 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
           child: Column(
             children: [
               ProfileImage(
+                img: currentUser.imgUrl == null
+                    ? null
+                    : Image.network(
+                        currentUser.imgUrl!,
+                        fit: BoxFit.cover,
+                      ),
                 gender: currentUser.gender ?? 0,
                 onChanged: (value) {
                   img = value;

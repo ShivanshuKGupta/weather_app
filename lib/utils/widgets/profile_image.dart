@@ -6,7 +6,7 @@ import 'package:weather_app/utils/utils.dart';
 
 class ProfileImage extends StatefulWidget {
   final int gender;
-  final File? img;
+  final Widget? img;
   final double radius;
   final void Function(File? img)? onChanged;
   final void Function()? onTap;
@@ -28,7 +28,6 @@ class _ProfileImageState extends State<ProfileImage> {
   @override
   void initState() {
     super.initState();
-    img = widget.img;
   }
 
   @override
@@ -75,13 +74,14 @@ class _ProfileImageState extends State<ProfileImage> {
                 Positioned.fill(
                   child: img != null
                       ? Image.file(img!, fit: BoxFit.cover)
-                      : Image.asset(
-                          widget.gender == 0
-                              ? 'assets/images/male.jpg'
-                              : 'assets/images/female.jpg',
-                          fit: BoxFit.cover,
-                          width: 150,
-                        ),
+                      : widget.img ??
+                          Image.asset(
+                            widget.gender == 0
+                                ? 'assets/images/male.jpg'
+                                : 'assets/images/female.jpg',
+                            fit: BoxFit.cover,
+                            width: 150,
+                          ),
                 ),
                 if (widget.onChanged != null)
                   const CircleAvatar(

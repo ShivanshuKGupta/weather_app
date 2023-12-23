@@ -116,13 +116,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: ProfileImage(
                           gender: currentUser.gender ?? 0,
                           radius: 500,
-                          onTap: () {
-                            navigatorPush(
+                          img: currentUser.imgUrl == null
+                              ? null
+                              : Image.network(
+                                  currentUser.imgUrl!,
+                                  fit: BoxFit.cover,
+                                ),
+                          onTap: () async {
+                            await navigatorPush(
                               context,
                               EditProfileScreen(
                                 user: currentUser,
                               ),
                             );
+                            setState(() {});
                           },
                         ),
                       ),
